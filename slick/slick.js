@@ -337,9 +337,9 @@
     };
 
     Slick.prototype.asNavFor = function(index) {
-        var _ = this,
-            asNavFor = _.options.asNavFor !== null ? $(_.options.asNavFor).slick('getSlick') : null;
-        if (asNavFor !== null) asNavFor.slideHandler(index, true);
+        $( this.options.asNavFor ).not( $(this) ).each(function(){
+            $(this).slick('getSlick').slideHandler(index,true);
+        });
     };
 
     Slick.prototype.applyTransition = function(slide) {
