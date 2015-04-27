@@ -85,7 +85,9 @@
                 variableWidth: false,
                 vertical: false,
                 verticalSwiping: false,
-                waitForAnimate: true
+                waitForAnimate: true,
+                mainSlick: false,
+                slugsElement: false
             };
 
             _.initials = {
@@ -360,6 +362,20 @@
             _.$slides.eq(slide).css(transition);
         }
 
+        _.setSlug();
+    };
+
+    Slick.prototype.setSlug = function() {
+
+        var _ = this;
+
+        if (_.options.mainSlick && _.options.slugsElement && window.history) {
+
+            var $elementSlickActive = $(_.options.mainSlick + " .slick-active " + _.options.slugsElement);
+            var slugToSet = "#" + $elementSlickActive.attr("title");
+
+            window.history.pushState(null, null, slugToSet);
+        }
     };
 
     Slick.prototype.autoPlay = function() {
@@ -519,6 +535,7 @@
             _.$list.addClass('draggable');
         }
 
+        _.setSlug();
     };
 
     Slick.prototype.buildRows = function() {
