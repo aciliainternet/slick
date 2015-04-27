@@ -337,12 +337,10 @@
     };
 
     Slick.prototype.asNavFor = function(index) {
-        var _ = this;
-        if (_.options.asNavFor !== null) {
-            $(_.options.asNavFor).each(function(i,element){
-                $(element).slick('getSlick').slideHandler(index, true);
-            });
-        }
+
+        $( this.options.asNavFor ).not( $(this) ).each(function(){
+            $(this).slick('getSlick').slideHandler(index,true);
+        });
     };
 
     Slick.prototype.applyTransition = function(slide) {
