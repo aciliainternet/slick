@@ -374,7 +374,7 @@
         if (_.options.mainSlick && _.options.slugsElement && window.history) {
 
             var $elementSlickActive = $(_.options.mainSlick + ' .slick-active ' + _.options.slugsElement);
-            var slugToSet = '#' + $elementSlickActive.attr('title');
+            var slugToSet = '#' + $elementSlickActive.attr('data-title');
 
             window.history.pushState(null, null, slugToSet);
         }
@@ -383,7 +383,7 @@
     Slick.prototype.goToFromSlug = function(slug) {
 
         var _ = this;
-        var $element = $(_.options.mainSlick + ' ' + _.options.slugsElement + '[title=' + slug + ']');
+        var $element = $(_.options.mainSlick + ' ' + _.options.slugsElement + '[data-title=' + slug + ']');
 
         if ($element.size() > 0) {
             var index = parseInt($element.parent().attr('data-slick-index'));
