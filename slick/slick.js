@@ -385,8 +385,6 @@
 
         if ($element.size() > 0) {
             var index = parseInt($element.parent().attr('data-slick-index'));
-            _.setSlideClasses(index);
-            _.fadeSlide(index);
             _.currentSlide = index;
         } else if (window.history){
             window.history.pushState(null, null, location.href.split('#')[0]);
@@ -526,6 +524,12 @@
             '<div aria-live="polite" class="slick-list"/>').parent();
         _.$slideTrack.css('opacity', 0);
 
+        if (window.location.href.indexOf('#') > -1) {
+            
+            var slug = window.location.href.split('#')[1];
+            _.goToFromSlug(slug);
+        }
+
         if (_.options.centerMode === true || _.options.swipeToSlide === true) {
             _.options.slidesToScroll = 1;
         }
@@ -548,12 +552,6 @@
 
         if (_.options.draggable === true) {
             _.$list.addClass('draggable');
-        }
-
-        if (window.location.href.indexOf('#') > -1) {
-            
-            var slug = window.location.href.split('#')[1];
-            _.goToFromSlug(slug);
         }
     };
 
