@@ -388,8 +388,8 @@
         if ($element.size() > 0) {
             var index = parseInt($element.parent().attr('data-slick-index'));
             _.currentSlide = index;
-        } else if (window.history){
-            window.history.pushState(null, null, location.href.split('#')[0]);
+        } else if (window.history && window.location){
+            window.history.pushState(null, null, window.location.href.split('#')[0]);
         }
     };
 
