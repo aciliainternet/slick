@@ -57,6 +57,8 @@
                 },
                 dots: false,
                 dotsClass: 'slick-dots',
+                dotsElementsClass: '',
+                dotsAsThumbs: false,
                 draggable: true,
                 easing: 'linear',
                 edgeFriction: 0.35,
@@ -480,12 +482,20 @@
         var _ = this,
             i, dotString;
 
+        if (_.options.dotsAsThumbs) {
+            _.options.customPaging = function(slider, i) {
+                var parentClass = this.$slider.attr("class").split(' ')[0];
+                var thumb = $("." + parentClass + " .slick-slide[data-slick-index=" + i + "] img").attr("data-thumb");
+                return '<img src="' + thumb + '" data-role="none">';
+            }
+        }
+
         if (_.options.dots === true && _.slideCount > _.options.slidesToShow) {
 
             dotString = '<ul class="' + _.options.dotsClass + '">';
 
             for (i = 0; i <= _.getDotCount(); i += 1) {
-                dotString += '<li>' + _.options.customPaging.call(this, _, i) + '</li>';
+                dotString += '<li class="' + _.options.dotsElementsClass + '">' + _.options.customPaging.call(this, _, i) + '</li>';
             }
 
             dotString += '</ul>';
