@@ -383,12 +383,31 @@
     Slick.prototype.goToFromSlug = function(slug) {
 
         var _ = this;
-        var $element = $(_.options.mainSlick + ' ' + _.options.slugsElement + '[data-title=' + slug + ']');
+        var integersRegex = /^\d+$/;
+        var $element = false;
+        var numeric_slug = false;
 
-        if ($element.size() > 0) {
+        if (slug.match(integersRegex) === null) {
+            $element = $(_.options.mainSlick + ' ' + _.options.slugsElement + '[data-title=' + slug + ']');
+        } else {
+            numeric_slug = true;
+            slug = parseInt(slug) - 1;
+            $(_.options.mainSlick + ' ' + _.options.slugsElement).parent().each(function() {
+
+                if ($(this).attr("data-slick-index") == slug) $element = $(this).children();
+            });
+        }
+
+        if ($element && $element.size() > 0) {
             var index = parseInt($element.parent().attr('data-slick-index'));
             _.currentSlide = index;
-        } else if (window.history && window.location){
+
+            if (numeric_slug) {
+                var slugText = '#' + $element.attr('data-title');
+                window.history.pushState(null, null, slugText);
+            }
+
+        } else {
             window.history.pushState(null, null, window.location.href.split('#')[0]);
         }
     };
@@ -534,7 +553,7 @@
             '<div aria-live="polite" class="slick-list"/>').parent();
         _.$slideTrack.css('opacity', 0);
 
-        if (window.location.href.indexOf('#') > -1) {
+        if (window.history && window.location && window.location.href.indexOf('#') > -1) {
             
             var slug = window.location.href.split('#')[1];
             _.goToFromSlug(slug);
