@@ -404,14 +404,14 @@
         } else {
             numeric_slug = true;
             slug = parseInt(slug) - 1;
-            $(_.options.mainSlick + ' ' + _.options.slugsElement).parent().each(function() {
+            $(_.options.mainSlick + ' ' + _.options.slugsElement).closest(".slick-slide").each(function() {
 
-                if ($(this).attr("data-slick-index") == slug) $element = $(this).children();
+                if ($(this).attr("data-slick-index") == slug) $element = $(this).find(_.options.slugsElement);
             });
         }
 
         if ($element && $element.size() > 0) {
-            var index = parseInt($element.parent().attr('data-slick-index'));
+            var index = parseInt($element.closest(".slick-slide").attr('data-slick-index'));
             _.currentSlide = index;
 
             if (numeric_slug) {
