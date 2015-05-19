@@ -376,17 +376,20 @@
             _.$slides.eq(slide).css(transition);
         }
 
-        _.setSlug();
+        _.setSlug(slide + 1);
     };
 
-    Slick.prototype.setSlug = function() {
+    Slick.prototype.setSlug = function(slide) {
 
-        var _ = this;
+        var _ = this,
+            slugToSet = '#' + slide;
 
         if (_.options.mainSlick && _.options.slugsElement && window.history) {
 
             var $elementSlickActive = $(_.options.mainSlick + ' .slick-active ' + _.options.slugsElement);
-            var slugToSet = '#' + $elementSlickActive.attr('data-title');
+            var slug = $elementSlickActive.attr('data-title');
+
+            if (slug !== "") slugToSet = '#' + slug;
 
             window.history.pushState(null, null, slugToSet);
         }
@@ -397,12 +400,12 @@
         var _ = this;
         var integersRegex = /^\d+$/;
         var $element = false;
-        var numeric_slug = false;
 
-        if (slug.match(integersRegex) === null) {
+        if (slug === "") {
+            $element = false;
+        } else if (slug.match(integersRegex) === null) {
             $element = $(_.options.mainSlick + ' ' + _.options.slugsElement + '[data-title=' + slug + ']');
         } else {
-            numeric_slug = true;
             slug = parseInt(slug) - 1;
             $(_.options.mainSlick + ' ' + _.options.slugsElement).closest(".slick-slide").each(function() {
 
@@ -412,15 +415,15 @@
 
         if ($element && $element.size() > 0) {
             var index = parseInt($element.closest(".slick-slide").attr('data-slick-index'));
+            var slugText = $element.attr('data-title');
             _.currentSlide = index;
 
-            if (numeric_slug) {
-                var slugText = '#' + $element.attr('data-title');
-                window.history.pushState(null, null, slugText);
-            }
+            if (slugText === "") slugText = index + 1;
+
+            window.history.pushState(null, null, '#' + slugText);
 
         } else {
-            window.history.pushState(null, null, window.location.href.split('#')[0]);
+            _.goToFromSlug("1");
         }
     };
 
@@ -569,6 +572,8 @@
             
             var slug = window.location.href.split('#')[1];
             _.goToFromSlug(slug);
+        } else {
+            _.goToFromSlug("1");
         }
 
         if (_.options.centerMode === true || _.options.swipeToSlide === true) {
