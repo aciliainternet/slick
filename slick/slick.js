@@ -397,6 +397,8 @@
 
     Slick.prototype.goToFromSlug = function(slug) {
 
+        if (!this.options.slugsElement) return false;
+
         var _ = this;
         var integersRegex = /^\d+$/;
         var $element = false;
