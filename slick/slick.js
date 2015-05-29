@@ -423,6 +423,8 @@
             if (slugText === "") slugText = index + 1;
 
             window.history.pushState(null, null, '#' + slugText);
+            // move the slide to the new selected
+            _.slideHandler(_.currentSlide);
 
         } else {
             _.goToFromSlug("1");
