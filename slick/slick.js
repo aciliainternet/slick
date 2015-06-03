@@ -6,7 +6,7 @@
 |___/_|_|\___|_|\_(_)/ |___/
                    |__/
 
- Version: 1.5.5-Acilia_0.1
+ Version: 1.5.5-Acilia_0.2
   Author: Ken Wheeler
  Website: http://kenwheeler.github.io
     Docs: http://kenwheeler.github.io/slick
@@ -1378,7 +1378,6 @@
 
         function loadImages(imagesScope) {
             $('img[data-lazy]', imagesScope).each(function() {
-
                 var image = $(this),
                     imageSource = $(this).attr('data-lazy'),
                     imageToLoad = document.createElement('img');
@@ -1393,6 +1392,11 @@
                                         .removeAttr('data-lazy')
                                         .removeClass('slick-loading');
                                 });
+
+                            if (_.options.adaptiveHeight === true) {
+                                _.setPosition();
+                            }
+
                         });
                 };
 
