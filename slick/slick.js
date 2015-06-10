@@ -6,7 +6,7 @@
 |___/_|_|\___|_|\_(_)/ |___/
                    |__/
 
- Version: 1.5.5-Acilia_0.2
+ Version: 1.5.5-Acilia_0.3
   Author: Ken Wheeler
  Website: http://kenwheeler.github.io
     Docs: http://kenwheeler.github.io/slick
@@ -421,7 +421,7 @@
         if ($element && $element.size() > 0) {
             var index = parseInt($element.closest(".slick-slide").attr('data-slick-index'));
             var slugText = $element.attr('data-title');
-            _.currentSlide = index;
+            _.slickGoTo(index, true);
 
             if (slugText === "") slugText = index + 1;
 
@@ -574,14 +574,6 @@
         _.$list = _.$slideTrack.wrap(
             '<div aria-live="polite" class="slick-list"/>').parent();
         _.$slideTrack.css('opacity', 0);
-
-        if (window.history && window.location && window.location.href.indexOf('#') > -1) {
-            
-            var slug = window.location.href.split('#')[1];
-            _.goToFromSlug(slug);
-        } else {
-            _.goToFromSlug("1");
-        }
 
         if (_.options.centerMode === true || _.options.swipeToSlide === true) {
             _.options.slidesToScroll = 1;
@@ -1241,6 +1233,14 @@
         }
 
         if (creation) {
+
+            if (window.history && window.location && window.location.href.indexOf('#') > -1) {
+                var slug = window.location.href.split('#')[1];
+                _.goToFromSlug(slug);
+            } else {
+                _.goToFromSlug("1");
+            }
+
             _.$slider.trigger('init', [_]);
         }
 
