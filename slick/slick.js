@@ -1231,19 +1231,6 @@
             _.updateDots();
 
         }
-
-        if (creation) {
-
-            if (window.history && window.location && window.location.href.indexOf('#') > -1) {
-                var slug = window.location.href.split('#')[1];
-                _.goToFromSlug(slug);
-            } else {
-                _.goToFromSlug("1");
-            }
-
-            _.$slider.trigger('init', [_]);
-        }
-
     };
 
     Slick.prototype.initArrowEvents = function() {
