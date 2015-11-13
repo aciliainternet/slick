@@ -6,7 +6,7 @@
 |___/_|_|\___|_|\_(_)/ |___/
                    |__/
 
- Version: 1.5.5-Acilia_0.3
+ Version: 1.5.5-Acilia_0.4
   Author: Ken Wheeler
  Website: http://kenwheeler.github.io
     Docs: http://kenwheeler.github.io/slick
@@ -389,9 +389,9 @@
 
         if (_.options.mainSlick && _.options.slugsElement && window.history) {
 
-            var $elementSlickActive = $(_.options.mainSlick + ' .slick-active ' + _.options.slugsElement);
+            var $elementSlickActive = $(_.options.mainSlick + ' .slick-slide.slick-current');
+            if (!$elementSlickActive.hasClass(_.options.slugsElement.substring(1))) $elementSlickActive = $elementSlickActive.find(_.options.slugsElement);
             var slug = $elementSlickActive.attr('data-title');
-
             if (slug !== "") slugToSet = '#' + slug;
 
             window.history.pushState(null, null, slugToSet);
@@ -524,7 +524,11 @@
         if (_.options.dotsAsThumbs) {
             _.options.customPaging = function(slider, i) {
                 var parentClass = this.$slider.attr("class").split(' ')[0];
-                var thumb = $("." + parentClass + " .slick-slide[data-slick-index=" + i + "] img").attr("data-thumb");
+                var $thumb = $("." + parentClass + " .slick-slide[data-slick-index=" + i + "]");
+
+                if (!$thumb.hasClass(_.options.slugsElement)) $thumb = $thumb.find(_.options.slugsElement);
+                var thumb = $thumb.attr("data-thumb");
+
                 return '<img src="' + thumb + '" data-role="none">';
             }
         }
@@ -636,7 +640,7 @@
                     'width':(100 / _.options.slidesPerRow) + '%',
                     'display': 'inline-block'
                 });
-        
+
         }
 
     };
@@ -1231,6 +1235,10 @@
             _.updateDots();
 
         }
+
+        if (creation) {
+            _.$slider.trigger('init', [_]);
+        }
     };
 
     Slick.prototype.initArrowEvents = function() {
@@ -1572,7 +1580,7 @@
 
         var _ = this;
 
-        _.$slides = 
+        _.$slides =
             _.$slideTrack
                 .children(_.options.slide)
                 .addClass('slick-slide');
@@ -1947,9 +1955,9 @@
 
                 remainder = _.slideCount % _.options.slidesToShow;
                 indexOffset = _.options.infinite === true ? _.options.slidesToShow + index : index;
-                
+
                 if (_.options.slidesToShow == _.options.slidesToScroll && (_.slideCount - index) < _.options.slidesToShow) {
-                    
+
                     allSlides
                         .slice(indexOffset - (_.options.slidesToShow - remainder), indexOffset + remainder)
                         .addClass('slick-active')
@@ -2036,9 +2044,9 @@
 
         var _ = this;
 
-        var targetElement = 
-            $(event.target).is('.slick-slide') ? 
-                $(event.target) : 
+        var targetElement =
+            $(event.target).is('.slick-slide') ?
+                $(event.target) :
                 $(event.target).parents('.slick-slide');
 
         var index = parseInt(targetElement.attr('data-slick-index'));
@@ -2050,7 +2058,7 @@
             _.setSlideClasses(index);
             _.asNavFor(index);
             return;
-            
+
         }
 
         _.slideHandler(index);
@@ -2146,7 +2154,7 @@
 
         if (_.options.fade === true) {
             if (dontAnimate !== true) {
-                
+
                 _.fadeSlideOut(oldSlide);
 
                 _.fadeSlide(animSlide, function() {
