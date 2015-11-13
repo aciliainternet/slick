@@ -6,7 +6,7 @@
 |___/_|_|\___|_|\_(_)/ |___/
                    |__/
 
- Version: 1.5.8-Acilia_0.4
+ Version: 1.5.8-Acilia_0.5
   Author: Ken Wheeler
  Website: http://kenwheeler.github.io
     Docs: http://kenwheeler.github.io/slick
@@ -15,6 +15,7 @@
 
  */
 /* global window, document, define, jQuery, setInterval, clearInterval */
+
 (function(factory) {
     'use strict';
     if (typeof define === 'function' && define.amd) {
@@ -90,7 +91,8 @@
                 vertical: false,
                 verticalSwiping: false,
                 waitForAnimate: true,
-                zIndex: 1000
+                zIndex: 1000,
+                adaptiveSliderHeight: false
             };
 
             _.initials = {
@@ -1088,7 +1090,9 @@
             targetLeft,
             verticalHeight,
             verticalOffset = 0,
-            targetSlide;
+            targetSlide,
+            sliderHeight,
+            notVisibleHeight;
 
         _.slideOffset = 0;
         verticalHeight = _.$slides.first().outerHeight(true);
@@ -1153,6 +1157,16 @@
                 targetLeft = targetSlide[0] ? targetSlide[0].offsetLeft * -1 : 0;
                 targetLeft += (_.$list.width() - targetSlide.outerWidth()) / 2;
             }
+        }
+
+        if (_.options.adaptiveSliderHeight === true && _.options.vertical === true) {
+          sliderHeight = _.calculateVisibleHeight(_.$slider.first())
+
+          notVisibleHeight = (((slideIndex + _.options.slidesToShow) - _.slideCount) * verticalHeight)
+
+          if (notVisibleHeight > 0) {
+            targetLeft = targetLeft - Math.min(notVisibleHeight, (verticalHeight * (1 + _.options.slidesToShow ) - sliderHeight))
+          }
         }
 
         return targetLeft;
@@ -2170,7 +2184,6 @@
     };
 
     Slick.prototype.slideHandler = function(index, sync, dontAnimate) {
-
         var targetSlide, animSlide, oldSlide, slideLeft, targetLeft = null,
             _ = this;
 
@@ -2199,6 +2212,7 @@
         _.currentLeft = _.swipeLeft === null ? slideLeft : _.swipeLeft;
 
         if (_.options.infinite === false && _.options.centerMode === false && (index < 0 || index > _.getDotCount() * _.options.slidesToScroll)) {
+
             if (_.options.fade === false) {
                 targetSlide = _.currentSlide;
                 if (dontAnimate !== true) {
@@ -2211,6 +2225,7 @@
             }
             return;
         } else if (_.options.infinite === false && _.options.centerMode === true && (index < 0 || index > (_.slideCount - _.options.slidesToScroll))) {
+
             if (_.options.fade === false) {
                 targetSlide = _.currentSlide;
                 if (dontAnimate !== true) {
@@ -2701,6 +2716,16 @@
                 }
             }, 0);
         });
+    };
+
+    Slick.prototype.calculateVisibleHeight = function ($el) {
+        var scrollTop = $(window).scrollTop(),
+            scrollBot = scrollTop + $(window).height(),
+            elTop = $el.offset().top,
+            elBottom = elTop + $el.outerHeight(),
+            visibleTop = elTop < scrollTop ? scrollTop : elTop,
+            visibleBottom = elBottom > scrollBot ? scrollBot : elBottom;
+        return Math.max(visibleBottom - visibleTop, 0);
     };
 
     $.fn.slick = function() {

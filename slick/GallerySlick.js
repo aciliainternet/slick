@@ -19,7 +19,8 @@ var GallerySlick = function(element) {
         draggable: true,
         centerMode: true,
         lazyLoad: 'ondemand',
-        slugsElement: '.gallery-slick-main-image'
+        slugsElement: '.gallery-slick-main-image',
+        adaptiveSliderHeight: false
     };
     var galleryThumbnailsOptions = {
         appendDots: galleryThumbnailsElement,
@@ -111,7 +112,9 @@ var GallerySlick = function(element) {
             return false;
         }
 
-        if (DEBUG) console.info('[GallerySlick] Checking slug');
+        if (DEBUG) {
+            console.info('[GallerySlick] Checking slug');
+        }
 
         if (window.location && window.location.hash && window.location.hash !== '') {
             var slug = window.location.hash.substr(1);
@@ -156,7 +159,9 @@ var GallerySlick = function(element) {
     var initInterstitial = function() {
         if (!interstitialOptions) return false;
 
-        if (DEBUG) console.info('[GallerySlick] GallerySlick object set interstitial');
+        if (DEBUG) {
+            console.info('[GallerySlick] GallerySlick object set interstitial');
+        }
 
         var interstitial = new Interstitial(interstitialOptions);
 
@@ -185,7 +190,9 @@ var GallerySlick = function(element) {
         if ($(galleryElement).size() === 0) return false;
 
         if ($(galleryElement + ' .slick-slide').size() > 0) {
-            if (DEBUG) console.info('[GallerySlick] GallerySlick was instanced previously!');
+            if (DEBUG) {
+                console.info('[GallerySlick] GallerySlick was instanced previously!');
+            }
             return false;
         }
 
