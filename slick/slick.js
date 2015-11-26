@@ -6,7 +6,7 @@
 |___/_|_|\___|_|\_(_)/ |___/
                    |__/
 
- Version: 1.5.8-Acilia_0.5
+ Version: 1.5.8-Acilia_0.6
   Author: Ken Wheeler
  Website: http://kenwheeler.github.io
     Docs: http://kenwheeler.github.io/slick
@@ -1090,9 +1090,7 @@
             targetLeft,
             verticalHeight,
             verticalOffset = 0,
-            targetSlide,
-            sliderHeight,
-            notVisibleHeight;
+            targetSlide;
 
         _.slideOffset = 0;
         verticalHeight = _.$slides.first().outerHeight(true);
@@ -1160,13 +1158,17 @@
         }
 
         if (_.options.adaptiveSliderHeight === true && _.options.vertical === true) {
-          sliderHeight = _.calculateVisibleHeight(_.$slider.first())
 
-          notVisibleHeight = (((slideIndex + _.options.slidesToShow) - _.slideCount) * verticalHeight)
+            var visibleSliderHeight = _.calculateVisibleHeight(_.$slider.first());
+            var notVisibleHeight = (_.slideCount * verticalHeight) - visibleSliderHeight + targetLeft + verticalHeight;
+            var offset = (((_.slideCount - slideIndex + 1) * verticalHeight) - notVisibleHeight - visibleSliderHeight) * -1;
 
-          if (notVisibleHeight > 0) {
-            targetLeft = targetLeft - Math.min(notVisibleHeight, (verticalHeight * (1 + _.options.slidesToShow ) - sliderHeight))
-          }
+            if (notVisibleHeight < 0 && offset == 0) {
+                targetLeft = targetLeft - notVisibleHeight;
+            } else {
+                targetLeft = targetLeft - Math.min(notVisibleHeight, offset);
+            }
+
         }
 
         return targetLeft;
@@ -1998,7 +2000,6 @@
 
 
     Slick.prototype.setSlideClasses = function(index) {
-
         var _ = this,
             centerOffset, allSlides, indexOffset, remainder;
 
@@ -2172,7 +2173,6 @@
         if (!index) index = 0;
 
         if (_.slideCount <= _.options.slidesToShow) {
-
             _.setSlideClasses(index);
             _.asNavFor(index);
             return;
@@ -2184,6 +2184,7 @@
     };
 
     Slick.prototype.slideHandler = function(index, sync, dontAnimate) {
+
         var targetSlide, animSlide, oldSlide, slideLeft, targetLeft = null,
             _ = this;
 
@@ -2196,8 +2197,7 @@
         if (_.options.fade === true && _.currentSlide === index) {
             return;
         }
-
-        if (_.slideCount <= _.options.slidesToShow) {
+        if (_.slideCount <= _.options.slidesToShow && !_.options.adaptiveSliderHeight) {
             return;
         }
 
@@ -2211,7 +2211,7 @@
 
         _.currentLeft = _.swipeLeft === null ? slideLeft : _.swipeLeft;
 
-        if (_.options.infinite === false && _.options.centerMode === false && (index < 0 || index > _.getDotCount() * _.options.slidesToScroll)) {
+        if (_.adaptiveSliderHeight === false && _.options.infinite === false && _.options.centerMode === false && (index < 0 || index > _.getDotCount() * _.options.slidesToScroll)) {
 
             if (_.options.fade === false) {
                 targetSlide = _.currentSlide;
@@ -2224,8 +2224,7 @@
                 }
             }
             return;
-        } else if (_.options.infinite === false && _.options.centerMode === true && (index < 0 || index > (_.slideCount - _.options.slidesToScroll))) {
-
+        } else if (_.adaptiveSliderHeight === false && _.options.infinite === false && _.options.centerMode === true && (index < 0 || index > (_.slideCount - _.options.slidesToScroll))) {
             if (_.options.fade === false) {
                 targetSlide = _.currentSlide;
                 if (dontAnimate !== true) {
